@@ -1,7 +1,12 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
+import 'express-async-errors';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cors from 'cors';
+
+import {notFoundMiddleware} from './api/middleware/error/not.found.middleware'
+import {errorHandlerMiddleware} from './api/middleware/error/error.handler.middleware'
+
 import { router as appRouter } from './api/routes/app.route';
 import { router as demoRouter } from './api/routes/demo.route';
 import { router as userRouter } from './api/routes/user.route';
@@ -23,24 +28,9 @@ app.use('/demo', demoRouter);
 app.use('/user', userRouter);
 //==========================
 
-interface Error {
-  status?: number;
-  message: string;
-}
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const err: Error = new Error('Route not found!');
-  err.status = 404;
-  next(err);
-});
-
-app.use((err: Error, req: Request, res: Response) => {
-  res.status(err.status || 500);
-  res.json({
-    error: {
-      message: err.message
-    }
-  });
-});
+//====== Error handler Middlewares =======
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
+//========================================
 
 export { app };

@@ -11,7 +11,7 @@ import {
 
 import { UserRole } from '../models/user.model';
 
-import { verifyUserWithJWT, verifyUserRoles } from '../middleware/authorization.middleware';
+import { verifyUserWithJWT, verifyUserRoles } from '../middleware/auth/authorization.middleware';
 
 const router: IRouter = express.Router();
 

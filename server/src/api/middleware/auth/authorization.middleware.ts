@@ -1,7 +1,7 @@
 import {Request, Response, NextFunction } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { error } from '../../../node-mongo-helpers';
-import { UserRole } from '../models/user.model';
+import { error } from '../../../../node-mongo-helpers';
+import { UserRole } from '../../models/user.model';
 
 
 export const verifyUserWithJWT = async (req: Request, res: Response, next:NextFunction) => {
