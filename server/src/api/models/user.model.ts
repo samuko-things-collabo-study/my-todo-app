@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export enum UserRole {
   Admin = 'ADMIN',
@@ -11,9 +13,11 @@ export interface UserDocument extends mongoose.Document {
   email: string;
   password: string;
   role: UserRole;
-  avatar: string;
+  avatar?: string;
   createdAt?: Date;
   updatedAt?: Date;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+  generateToken(): string;
 }
 
 const collectionName = 'user';
@@ -26,12 +30,43 @@ const UserSchema = new mongoose.Schema({
       "please provide valid email",
     ]},
   password: { type: String, required: true },
-  role: { type: UserRole, default: UserRole.User},
+  role: { type: String, required: true, default: UserRole.User},
   avatar: { type: String },
 },
 {
   timestamps: true,
 });
+
+
+
+
+UserSchema.pre('save', async function(next){
+  // Only run this function if password was moddified (not on other update functions)
+  if (!this.isModified("password")){
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+
+  return next();
+})
+
+// comparing password during login
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  const isMatch = await bcrypt.compare(candidatePassword, this.password);
+  return isMatch;
+}
+
+// generating token during registration and logging in
+UserSchema.methods.generateToken = function (): string {
+  const token = jwt.sign(
+    {_id: this._id, username: this.username, role: this.role},
+    `${process.env.JWT_SECRET}`,
+    {expiresIn: `${process.env.JWT_LIFETIME}`});
+  return token;
+}
+
+
 
 const UserModel = mongoose.model<UserDocument>(collectionName, UserSchema); 
 export { UserModel };
