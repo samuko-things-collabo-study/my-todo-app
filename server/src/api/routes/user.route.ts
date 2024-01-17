@@ -19,12 +19,12 @@ router.post('/auth/signup', signUpOneUserController);
 router.post('/auth/signin', signInOneUserController);
 
 router.get('/get-all', getAllUsersController);
-router.get('/auth/get-one', verifyUserWithJWT, verifyUserRoles([UserRole.User]), getOneUserController);
+router.get('/auth/get-profile', verifyUserWithJWT, verifyUserRoles([UserRole.User]), getOneUserController);
 
-router.patch('/auth/update-one-prop', verifyUserWithJWT, verifyUserRoles([UserRole.User]), updateOneUserPropertyController);
-router.put('/auth/update-all-prop', verifyUserWithJWT, verifyUserRoles([UserRole.User]), updateOneUserPropertiesController);
+router.put('/auth/update-profile', verifyUserWithJWT, verifyUserRoles([UserRole.User]), updateOneUserPropertiesController);
+router.patch('/auth/update-profile-one', verifyUserWithJWT, verifyUserRoles([UserRole.User]), updateOneUserPropertyController);
 
-router.delete('/auth/delete-one', verifyUserWithJWT, verifyUserRoles([UserRole.User]), deleteOneUserController);
+router.delete('/auth/delete-profile', verifyUserWithJWT, verifyUserRoles([UserRole.User]), deleteOneUserController);
 
 
 ///////////////////////////////////////////////////////////

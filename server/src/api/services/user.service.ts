@@ -1,6 +1,6 @@
 import { UserDocument, UserModel as User } from '../models/user.model';
 
-const selectString = '_id firstname lastname username email password roles createdAt updatedAt';
+const selectString = '_id username email password role avatar createdAt updatedAt';
 
 type SignInDocument = Pick<UserDocument, "email" | "password">
 
@@ -51,7 +51,7 @@ export const getOneUserService = async (paramsId: string) => {
 };
 
 export const updateOneUserPropertyService = async (paramsId: string, requestBody: { propName: string, value: string }[]) => {
-  const query = await User.findById(paramsId).select('_id name age').exec();
+  const query = await User.findById(paramsId).select(selectString).exec();
   if(!query){
     throw new Error('No record found for provided ID');
   }
@@ -69,7 +69,7 @@ export const updateOneUserPropertyService = async (paramsId: string, requestBody
 
 
 export const updateOneUserPropertiesService = async (paramsId: string, requestBody: UserDocument) => {
-  const query = await User.findById(paramsId).select('_id name age').exec();
+  const query = await User.findById(paramsId).select(selectString).exec();
   if(!query){
     throw new Error('No record found for provided ID');
   }
