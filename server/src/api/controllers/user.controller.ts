@@ -207,8 +207,8 @@ export const updateOneUserPropertiesController = async (req: Request, res: Respo
 
 export const deleteOneUserController = async (req: Request, res: Response) => {
   try {
-    // await deleteOneUserService(req.params.userId);
-    await deleteOneUserService(req.user._id);
+    await deleteOneUserService(req.params.userId);
+    // await deleteOneUserService(req.user._id);
     const response = {
       success: true,
       data: {},

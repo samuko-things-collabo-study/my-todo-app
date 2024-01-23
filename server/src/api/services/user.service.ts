@@ -86,9 +86,6 @@ export const updateOneUserPropertiesService = async (paramsId: string, requestBo
 
 export const deleteOneUserService = async (paramsId: string) => {
   const query = await User.findOneAndDelete({ _id: paramsId }).exec();
-  if(!query){
-    throw new Error('No record found for provided ID');
-  }
   return query;
 };
 

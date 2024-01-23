@@ -8,9 +8,7 @@ import {
   updateOneUserPropertiesController,
   deleteOneUserController,
 } from '../controllers/user.controller';
-
 import { UserRole } from '../models/user.model';
-
 import { verifyUserWithJWT, verifyUserRoles } from '../middleware/authorization.middleware';
 
 const router: IRouter = express.Router();
@@ -24,14 +22,12 @@ router.get('/auth/get-profile', verifyUserWithJWT, verifyUserRoles([UserRole.Use
 router.put('/auth/update-profile', verifyUserWithJWT, verifyUserRoles([UserRole.User]), updateOneUserPropertiesController);
 router.patch('/auth/update-profile-one', verifyUserWithJWT, verifyUserRoles([UserRole.User]), updateOneUserPropertyController);
 
-router.delete('/auth/delete-profile', verifyUserWithJWT, verifyUserRoles([UserRole.User]), deleteOneUserController);
-
+router.delete('/delete/:userId', deleteOneUserController);
 
 ///////////////////////////////////////////////////////////
 import {
   deleteAllUserController,
 } from '../controllers/user.controller';
-
 
 router.delete('/delete-all', deleteAllUserController);
 //////////////////////////////////////////////////////////
