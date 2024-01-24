@@ -1,10 +1,10 @@
+import { BadRequestError } from '../exceptions/errors/BadRequestError';
+import { NotFoundError } from '../exceptions/errors/NotFoundError';
 import { UserDocument, UserModel as User } from '../models/user.model';
 
 const selectString = '_id username email password role avatar createdAt updatedAt';
 
 type SignInDocument = Pick<UserDocument, "email" | "password">
-
-
 
 
 export const signUpOneUserService = async (requestBody: UserDocument): Promise<UserDocument> => {
@@ -22,17 +22,17 @@ export const signInOneUserService = async (requestBody: SignInDocument) => {
   const {email, password} = requestBody;
   // check if email and password was provided
   if (!email && !password){
-    throw new Error("Please provide email and password");
+    throw new BadRequestError("Please provide email and password");
   }
   // check if the user is registered in the database
   const user = await User.findOne({email});
   if(!user){
-    throw new Error("invalid email or password");
+    throw new BadRequestError("invalid email or password");
   }
   // check if correct password was provided
   const isPasswordCorrect = await user.comparePassword(password);
   if(!isPasswordCorrect) {
-    throw new Error("invalid email or password");
+    throw new BadRequestError("invalid email or password");
   }
   return user;
 };
@@ -45,7 +45,7 @@ export const getAllUsersService = async () => {
 export const getOneUserService = async (paramsId: string) => {
   const query = await User.findById(paramsId).select(selectString).exec();
   if(!query){
-    throw new Error('No record found for provided ID');
+    throw new NotFoundError('No record found for provided ID');
   }
   return query;
 };
@@ -53,12 +53,12 @@ export const getOneUserService = async (paramsId: string) => {
 export const updateOneUserPropertyService = async (paramsId: string, requestBody: { propName: string, value: string }[]) => {
   const query = await User.findById(paramsId).select(selectString).exec();
   if(!query){
-    throw new Error('No record found for provided ID');
+    throw new NotFoundError('No record found for provided ID');
   }
 
   for (const ops of requestBody) {
     if(!(ops.propName in query)){
-      throw new Error(`invalid property: ${ops.propName}`);
+      throw new BadRequestError(`invalid property: ${ops.propName}`);
     }
     query[ops.propName as keyof UserDocument] = ops.value as never;
   }
@@ -71,7 +71,7 @@ export const updateOneUserPropertyService = async (paramsId: string, requestBody
 export const updateOneUserPropertiesService = async (paramsId: string, requestBody: UserDocument) => {
   const query = await User.findById(paramsId).select(selectString).exec();
   if(!query){
-    throw new Error('No record found for provided ID');
+    throw new NotFoundError('No record found for provided ID');
   }
 
   query.username = requestBody.username;
@@ -85,7 +85,10 @@ export const updateOneUserPropertiesService = async (paramsId: string, requestBo
 
 
 export const deleteOneUserService = async (paramsId: string) => {
-  const query = await User.findOneAndDelete({ _id: paramsId }).exec();
+  const query = await User.deleteOne({ _id: paramsId }).exec();
+  if (query.deletedCount < 1){
+    throw new NotFoundError('No record found for provided ID to be deleted')
+  }
   return query;
 };
 
@@ -93,6 +96,9 @@ export const deleteOneUserService = async (paramsId: string) => {
 ////////////////////////////////////////////////////////////
 export const deleteAllUserService = async () => {
   const query = await User.deleteMany().exec();
+  if (query.deletedCount < 1){
+    throw new NotFoundError('No record found to be deleted')
+  }
   return query;
 }
 ////////////////////////////////////////////////////////////

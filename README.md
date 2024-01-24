@@ -97,8 +97,11 @@ npm run dev:local
 - I added a new folder in the server folder - sample_test_data - which contains some example data you can test with.
 - A new folder named `types` which has the `index.d.ts` file was added to help add extra property to the express request body which can be used during authenticating users.
 - due to the previous point, some commands in the package.json file were updated. more info on this can be found fron this [LINK](https://bobbyhadz.com/blog/typescript-property-does-not-exist-on-type-request) 
-> I think this can be new features to be added to the api boilerplate as it will add basic setup for authentication and authorization
-- Finally I've not been able to solve the error/exception handling matter yet and still on it.
+- Finally I've added error/exception handling to the back-end. you will find that there's a new folder named `exceptions` in the `api` folder which contains the `ErrorHandler.ts`, `CustomError.ts` and an `errors` folder. The `errors` folder contains the different errors that can be created from the CustomError  class whichich is then used in the code.
+- > you can add more custom errors as you like in the `errors` folder (Just use the same code as any of the other custom errors found in the `errors` folder) 
+
+
+> I think these can be new features to be added to the node-mongo api boilerplate as it will add **basic setup for authentication and authorization** as well as **error handling** to the template.
 <br/>
 
 
